@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { db, config } = require('./config/config');
+const { db, config } = require('./config/default');
 const Logging = require('./library/Logging');
 
 // const userRoutes = require('./routes/User');
@@ -10,7 +10,7 @@ const Logging = require('./library/Logging');
 
 const server = express();
 
-pg.connect()
+db.connect()
   .then(() => {
     Logging.info('Connected to Postgres');
     StartServer();
