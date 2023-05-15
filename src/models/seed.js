@@ -27,7 +27,7 @@ async function createTables() {
 
     await db.query(`
       CREATE TABLE users (
-        id             SERIAL       PRIMARY KEY,
+        _id            SERIAL       PRIMARY KEY,
         username       VARCHAR(255) NOT NULL     UNIQUE,
         password       VARCHAR(255) NOT NULL,
         salt           VARCHAR(255) NOT NULL,
@@ -37,45 +37,45 @@ async function createTables() {
       );
 
       CREATE TABLE posts (
-        id            SERIAL                       PRIMARY KEY,
-        title         VARCHAR(255)                 NOT NULL,
-        description   VARCHAR(255)                 NOT NULL,
-        price         VARCHAR(255)                 NOT NULL,
-        location      VARCHAR(255)                 NOT NULL,
-        "willDeliver" Boolean                      NOT NULL,
-        "authorId"    INTEGER REFERENCES users(id) NOT NULL,
-        "createAt"    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id           SERIAL                        PRIMARY KEY,
+        title         VARCHAR(255)                  NOT NULL,
+        description   VARCHAR(255)                  NOT NULL,
+        price         VARCHAR(255)                  NOT NULL,
+        location      VARCHAR(255)                  NOT NULL,
+        "willDeliver" Boolean                       NOT NULL,
+        "authorId"    INTEGER REFERENCES users(_id) NOT NULL,
+        "createAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE comments (
-        id          SERIAL                       PRIMARY KEY,
-        content     VARCHAR(255)                 NOT NULL,
-        "postId"    INTEGER REFERENCES posts(id) NOT NULL,
-        "authorId"  INTEGER REFERENCES users(id) NOT NULL,
-        "createAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id         SERIAL                        PRIMARY KEY,
+        content     VARCHAR(255)                  NOT NULL,
+        "postId"    INTEGER REFERENCES posts(_id) NOT NULL,
+        "authorId"  INTEGER REFERENCES users(_id) NOT NULL,
+        "createAt"  TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"  TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE conversations (
-        id         SERIAL       PRIMARY KEY,
+        _id        SERIAL       PRIMARY KEY,
         "createAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
         "updateAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE users_conversations (
-        "userId"         INTEGER REFERENCES users(id)         NOT NULL,           
-        "conversationId" INTEGER REFERENCES conversations(id) NOT NULL,
+        "userId"         INTEGER REFERENCES users(_id)         NOT NULL,           
+        "conversationId" INTEGER REFERENCES conversations(_id) NOT NULL,
         UNIQUE ("userId", "conversationId")
       );
 
       CREATE TABLE messages (
-        id               SERIAL                               PRIMARY KEY,
-        content          VARCHAR(255)                         NOT NULL,
-        "authorId"       INTEGER REFERENCES users(id)         NOT NULL,
-        "conversationId" INTEGER REFERENCES conversations(id) NOT NULL,
-        "createAt"       TIMESTAMP(3)                         NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"       TIMESTAMP(3)                         NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id              SERIAL                                PRIMARY KEY,
+        content          VARCHAR(255)                          NOT NULL,
+        "authorId"       INTEGER REFERENCES users(_id)         NOT NULL,
+        "conversationId" INTEGER REFERENCES conversations(_id) NOT NULL,
+        "createAt"       TIMESTAMP(3)                          NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"       TIMESTAMP(3)                          NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
     `);
 

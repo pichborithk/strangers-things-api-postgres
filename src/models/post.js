@@ -19,4 +19,36 @@ async function createPost(fields) {
   }
 }
 
-module.exports = { createPost };
+async function getAllPosts() {
+  try {
+    const { rows } = await db.query(
+      `
+      SELECT *
+      FROM posts;
+      `
+    );
+
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getPostsByUser(userId) {
+  const { rows } = await db.query(
+    `
+    SELECT title, description, price, location, "willDeliver"
+    FROM posts
+    WHERE "authorId"=$1;
+    `,
+    [userId]
+  );
+
+  if (!rows || rows.length === 0) {
+    return null;
+  }
+
+  return rows;
+}
+
+module.exports = { createPost, getAllPosts, getPostsByUser };
