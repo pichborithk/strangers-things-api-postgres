@@ -1,4 +1,5 @@
 const { db } = require('../config/default');
+const { addCommentsToPost } = require('./comment');
 
 async function createPost(fields) {
   const { title, description, price, location, willDeliver, authorId } = fields;
@@ -29,16 +30,26 @@ async function getAllPosts() {
       `
     );
 
-    rows.forEach(post => {
-      post.author = { _id: post.authorId, username: post.authorUsername };
-      delete post.authorId;
-      delete post.authorUsername;
-    });
+    const posts = await Promise.all(rows.map(post => addCommentsToPost(post)));
 
-    return rows;
+    return posts;
   } catch (error) {
     throw error;
   }
+}
+
+async function getPostById(postId) {
+  const { rows } = await db.query(
+    `
+    SELECT *
+    FROM posts
+    WHERE _id=$1;
+    `,
+    [postId]
+  );
+
+  const [post] = rows;
+  return post;
 }
 
 async function getPostsByUser(userId) {
@@ -55,7 +66,9 @@ async function getPostsByUser(userId) {
     return null;
   }
 
-  return rows;
+  const posts = await Promise.all(rows.map(post => addCommentsToPost(post)));
+
+  return posts;
 }
 
-module.exports = { createPost, getAllPosts, getPostsByUser };
+module.exports = { createPost, getAllPosts, getPostById, getPostsByUser };

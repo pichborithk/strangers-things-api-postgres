@@ -58,6 +58,9 @@ const readAll = async (req, res) => {
       } else {
         post.isAuthor = false;
       }
+      post.author = { _id: post.authorId, username: post.authorUsername };
+      delete post.authorId;
+      delete post.authorUsername;
     });
 
     res.status(200).json({ success: true, data: posts });
