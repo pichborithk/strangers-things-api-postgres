@@ -82,6 +82,8 @@ const readUser = async (req, res) => {
     }
     console.log('1');
     const user = await getUser({ sessionToken });
+    delete user.password;
+    delete user.salt;
     res.status(200).json({ success: true, data: user });
     return;
   } catch (error) {
