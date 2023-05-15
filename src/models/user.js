@@ -34,8 +34,17 @@ async function getUser(field) {
     if (!rows || rows.length === 0) {
       return null;
     }
-
     const [user] = rows;
+
+    const { rows: posts } = await db.query(
+      `
+      SELECT title, description, price, location, "willDeliver"
+      FROM posts
+      WHERE "authorId"=$1;
+      `,
+      [user.id]
+    );
+    user.posts = posts;
     return user;
   } catch (error) {
     throw error;

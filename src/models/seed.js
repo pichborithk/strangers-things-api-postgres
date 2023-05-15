@@ -37,14 +37,15 @@ async function createTables() {
       );
 
       CREATE TABLE posts (
-        id          SERIAL                       PRIMARY KEY,
-        title       VARCHAR(255)                 NOT NULL,
-        description VARCHAR(255)                 NOT NULL,
-        price       VARCHAR(255)                 NOT NULL,
-        willDeliver Boolean                      NOT NULL,
-        "authorId"  INTEGER REFERENCES users(id) NOT NULL,
-        "createAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        id            SERIAL                       PRIMARY KEY,
+        title         VARCHAR(255)                 NOT NULL,
+        description   VARCHAR(255)                 NOT NULL,
+        price         VARCHAR(255)                 NOT NULL,
+        location      VARCHAR(255)                 NOT NULL,
+        "willDeliver" Boolean                      NOT NULL,
+        "authorId"    INTEGER REFERENCES users(id) NOT NULL,
+        "createAt"    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE comments (
