@@ -73,4 +73,20 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const readUser = async (req, res) => {
+  try {
+    const sessionToken = req.headers.authorization;
+    if (!sessionToken) {
+      res.status(403).json({ success: false, message: 'Please login...' });
+      return;
+    }
+    console.log('1');
+    const user = await getUser({ sessionToken });
+    res.status(200).json({ success: true, data: user });
+    return;
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+module.exports = { register, login, readUser };

@@ -26,7 +26,7 @@ async function getUser(field) {
       `
       SELECT id, username, password, salt
       FROM users
-      WHERE ${key}=$1;
+      WHERE "${key}"=$1;
       `,
       [field[key]]
     );
@@ -63,7 +63,6 @@ async function updateUser(id, fields) {
     );
 
     const [user] = rows;
-    console.log(user);
     return user;
   } catch (error) {
     throw error;
