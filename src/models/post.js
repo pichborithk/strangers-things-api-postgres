@@ -23,12 +23,19 @@ async function getAllPosts() {
   try {
     const { rows } = await db.query(
       `
-      SELECT *
-      FROM posts;
+      SELECT posts.*, users.username as "authorUsername"
+      FROM posts
+      JOIN users ON posts."authorId"=users._id;
       `
     );
 
-    return posts;
+    rows.forEach(post => {
+      post.author = { _id: post.authorId, username: post.authorUsername };
+      delete post.authorId;
+      delete post.authorUsername;
+    });
+
+    return rows;
   } catch (error) {
     throw error;
   }
