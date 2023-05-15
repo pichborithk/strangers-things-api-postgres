@@ -1,4 +1,5 @@
 const { db } = require('../config/default');
+const { createUser, getUser } = require('./user');
 
 async function dropTables() {
   try {
@@ -26,10 +27,13 @@ async function createTables() {
 
     await db.query(`
       CREATE TABLE users (
-        id       SERIAL       PRIMARY KEY,
-        username VARCHAR(255) NOT NULL     UNIQUE,
-        createAt TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        updateAt TIMESTAMP(3) NOT NULL
+        id           SERIAL       PRIMARY KEY,
+        username     VARCHAR(255) NOT NULL     UNIQUE,
+        password     VARCHAR(255) NOT NULL,
+        salt         VARCHAR(255) NOT NULL,
+        sessionToken VARCHAR(255),
+        "createAt"   TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"   TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE posts (
@@ -39,8 +43,8 @@ async function createTables() {
         price       VARCHAR(255)                 NOT NULL,
         willDeliver Boolean                      NOT NULL,
         "authorId"  INTEGER REFERENCES users(id) NOT NULL,
-        createAt    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        updateAt    TIMESTAMP(3)                 NOT NULL
+        "createAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE comments (
@@ -48,18 +52,18 @@ async function createTables() {
         content     VARCHAR(255)                 NOT NULL,
         "postId"    INTEGER REFERENCES posts(id) NOT NULL,
         "authorId"  INTEGER REFERENCES users(id) NOT NULL,
-        createAt    TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        updateAt    TIMESTAMP(3)                 NOT NULL
+        "createAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"  TIMESTAMP(3)                 NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE conversations (
-        id       SERIAL       PRIMARY KEY,
-        createAt TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        updateAt TIMESTAMP(3) NOT NULL
+        id         SERIAL       PRIMARY KEY,
+        "createAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE users_conversations (
-        "userId"         INTEGER REFERENCES users(id)           NOT NULL,           
+        "userId"         INTEGER REFERENCES users(id)         NOT NULL,           
         "conversationId" INTEGER REFERENCES conversations(id) NOT NULL,
         UNIQUE ("userId", "conversationId")
       );
@@ -69,8 +73,8 @@ async function createTables() {
         content          VARCHAR(255)                         NOT NULL,
         "authorId"       INTEGER REFERENCES users(id)         NOT NULL,
         "conversationId" INTEGER REFERENCES conversations(id) NOT NULL,
-        createAt         TIMESTAMP(3)                         NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        updateAt         TIMESTAMP(3)
+        "createAt"       TIMESTAMP(3)                         NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"       TIMESTAMP(3)                         NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
@@ -92,6 +96,13 @@ async function rebuildDB() {
   }
 }
 
+async function testDB() {
+  // await createUser({ username: 'john', password: '123', salt: '123' });
+  // const user = await getUser({ username: 'john' });
+  // console.log(user);
+}
+
 rebuildDB()
+  .then(testDB)
   .catch(console.error)
   .finally(() => db.end());

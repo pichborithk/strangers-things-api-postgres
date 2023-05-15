@@ -3,10 +3,10 @@ const express = require('express');
 const { db, config } = require('./config/default');
 const Logging = require('./library/Logging');
 
-// const userRoutes = require('./routes/User');
-// const postRoutes = require('./routes/Post');
-// const commentRoutes = require('./routes/Comment');
-// const messageRoutes = require('./routes/Message');
+const userRoutes = require('./routes/user');
+// const postRoutes = require('./routes/post');
+// const commentRoutes = require('./routes/comment');
+// const messageRoutes = require('./routes/message');
 
 const server = express();
 
@@ -58,7 +58,7 @@ const StartServer = () => {
   });
 
   /** Routes */
-  // server.use('/api/users', userRoutes);
+  server.use('/api/users', userRoutes);
   // server.use('/api/posts', postRoutes);
   // server.use('/api/comments', commentRoutes);
   // server.use('/api/messages', messageRoutes);
