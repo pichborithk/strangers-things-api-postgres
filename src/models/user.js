@@ -21,7 +21,6 @@ async function createUser({ username, password, salt }) {
 
 async function getUser(field) {
   const [key] = Object.keys(field);
-  console.log(key, field[key]);
   try {
     const { rows } = await db.query(
       `
@@ -43,4 +42,32 @@ async function getUser(field) {
   }
 }
 
-module.exports = { createUser, getUser };
+async function updateUser(id, fields) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 2}`)
+    .join(', ');
+
+  if (setString.length <= 0) {
+    return;
+  }
+
+  try {
+    const { rows } = await db.query(
+      `
+      UPDATE users
+      SET ${setString}
+      WHERE id=$1
+      RETURNING *;
+      `,
+      [id, ...Object.values(fields)]
+    );
+
+    const [user] = rows;
+    console.log(user);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = { createUser, getUser, updateUser };

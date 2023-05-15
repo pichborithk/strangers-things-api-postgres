@@ -27,13 +27,13 @@ async function createTables() {
 
     await db.query(`
       CREATE TABLE users (
-        id           SERIAL       PRIMARY KEY,
-        username     VARCHAR(255) NOT NULL     UNIQUE,
-        password     VARCHAR(255) NOT NULL,
-        salt         VARCHAR(255) NOT NULL,
-        sessionToken VARCHAR(255),
-        "createAt"   TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"   TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        id             SERIAL       PRIMARY KEY,
+        username       VARCHAR(255) NOT NULL     UNIQUE,
+        password       VARCHAR(255) NOT NULL,
+        salt           VARCHAR(255) NOT NULL,
+        "sessionToken" VARCHAR(255),
+        "createAt"     TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        "updateAt"     TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE posts (
