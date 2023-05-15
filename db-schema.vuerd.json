@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -109.34375,
-    "scrollLeft": -175.78125,
-    "zoomLevel": 0.8,
+    "scrollTop": -225.34375,
+    "scrollLeft": -25,
+    "zoomLevel": 1,
     "show": {
       "tableComment": true,
       "columnComment": false,
@@ -19,7 +19,7 @@
     },
     "database": "PostgreSQL",
     "databaseName": "strangers-things-dev",
-    "canvasType": "ERD",
+    "canvasType": "@vuerd/builtin-sql-ddl",
     "language": "GraphQL",
     "tableCase": "pascalCase",
     "columnCase": "camelCase",
@@ -505,7 +505,7 @@
         "id": "781d99e4-0504-4ad1-9f89-98b9161db58b"
       },
       {
-        "name": "Coversations",
+        "name": "Conversations",
         "comment": "",
         "columns": [
           {
@@ -582,8 +582,8 @@
           "active": false,
           "left": 54.3693,
           "top": 548.8435,
-          "zIndex": 4,
-          "widthName": 77.8671875,
+          "zIndex": 8,
+          "widthName": 85.09716796875,
           "widthComment": 60
         },
         "visible": true,
