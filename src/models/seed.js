@@ -1,4 +1,7 @@
 const { db } = require('../config/default');
+const { authentication } = require('../helpers/authentication');
+const { createComment } = require('./comment');
+const { createPost } = require('./post');
 const { createUser, getUser } = require('./user');
 
 async function dropTables() {
@@ -45,7 +48,8 @@ async function createTables() {
         "willDeliver" Boolean                       NOT NULL,
         "authorId"    INTEGER REFERENCES users(_id) NOT NULL,
         "createAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        "updateAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
+        active        Boolean                       NOT NULL     DEFAULT true,
       );
 
       CREATE TABLE comments (
@@ -98,9 +102,68 @@ async function rebuildDB() {
 }
 
 async function testDB() {
-  // await createUser({ username: 'john', password: '123', salt: '123' });
-  // const user = await getUser({ username: 'john' });
-  // console.log(user);
+  await createUser({
+    username: 'john',
+    password: authentication('123', '123'),
+    salt: '123',
+  });
+  await createUser({
+    username: 'david',
+    password: authentication('123', '123'),
+    salt: '123',
+  });
+  await createUser({
+    username: 'kevin',
+    password: authentication('123', '123'),
+    salt: '123',
+  });
+  await createPost({
+    title: 'post #1',
+    description: 'description #1',
+    price: 'price #1',
+    location: 'location #1',
+    willDeliver: false,
+    authorId: 1,
+  });
+  await createPost({
+    title: 'post #2',
+    description: 'description #2',
+    price: 'price #2',
+    location: 'location #2',
+    willDeliver: false,
+    authorId: 2,
+  });
+  await createPost({
+    title: 'post #3',
+    description: 'description #3',
+    price: 'price #3',
+    location: 'location #3',
+    willDeliver: false,
+    authorId: 3,
+  });
+  await createPost({
+    title: 'post #4',
+    description: 'description #4',
+    price: 'price #4',
+    location: 'location #4',
+    willDeliver: true,
+    authorId: 1,
+  });
+  await createPost({
+    title: 'post #5',
+    description: 'description #5',
+    price: 'price #5',
+    location: 'location #5',
+    willDeliver: true,
+    authorId: 2,
+  });
+  await createComment({ content: 'comment #1', postId: 1, authorId: 2 });
+  await createComment({ content: 'comment #2', postId: 1, authorId: 3 });
+  await createComment({ content: 'comment #3', postId: 1, authorId: 1 });
+  await createComment({ content: 'comment #4', postId: 1, authorId: 2 });
+  await createComment({ content: 'comment #5', postId: 2, authorId: 1 });
+  await createComment({ content: 'comment #6', postId: 2, authorId: 2 });
+  await createComment({ content: 'comment #7', postId: 2, authorId: 1 });
 }
 
 rebuildDB()

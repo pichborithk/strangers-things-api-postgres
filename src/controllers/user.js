@@ -86,6 +86,7 @@ const readUser = async (req, res) => {
     delete user.password;
     delete user.salt;
     user.posts = await getPostsByUser(user._id);
+    user.conversations = [];
 
     res.status(200).json({ success: true, data: user });
     return;
