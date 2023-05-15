@@ -1,4 +1,4 @@
-const { createPost } = require('../models/post');
+const { createPost, getAllPosts } = require('../models/post');
 const { getUser } = require('../models/user');
 
 const addPost = async (req, res) => {
@@ -13,7 +13,7 @@ const addPost = async (req, res) => {
 
     const user = await getUser({ sessionToken });
 
-    if (!user || !user.id) {
+    if (!user || !user._id) {
       res.status(403).json({ success: false, message: 'Unauthorized' });
       return;
     }
@@ -31,8 +31,9 @@ const addPost = async (req, res) => {
       price,
       willDeliver,
       location: location ? location : '[On Request]',
-      authorId: user.id,
+      authorId: user._id,
     });
+    delete post.authorId;
 
     res
       .status(201)
@@ -44,4 +45,27 @@ const addPost = async (req, res) => {
   }
 };
 
-module.exports = { addPost };
+const readAll = async (req, res) => {
+  try {
+    const posts = await getAllPosts();
+    const sessionToken = req.headers.authorization;
+
+    const user = await getUser({ sessionToken });
+
+    posts.forEach(post => {
+      if (user && post.authorId === user._id) {
+        post.isAuthor = true;
+      } else {
+        post.isAuthor = false;
+      }
+    });
+
+    res.status(200).json({ success: true, data: posts });
+    return;
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+    return;
+  }
+};
+
+module.exports = { addPost, readAll };

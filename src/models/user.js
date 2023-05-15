@@ -24,7 +24,7 @@ async function getUser(field) {
   try {
     const { rows } = await db.query(
       `
-      SELECT id, username, password, salt
+      SELECT *
       FROM users
       WHERE "${key}"=$1;
       `,
@@ -34,17 +34,8 @@ async function getUser(field) {
     if (!rows || rows.length === 0) {
       return null;
     }
-    const [user] = rows;
 
-    const { rows: posts } = await db.query(
-      `
-      SELECT title, description, price, location, "willDeliver"
-      FROM posts
-      WHERE "authorId"=$1;
-      `,
-      [user.id]
-    );
-    user.posts = posts;
+    const [user] = rows;
     return user;
   } catch (error) {
     throw error;
@@ -65,7 +56,7 @@ async function updateUser(id, fields) {
       `
       UPDATE users
       SET ${setString}
-      WHERE id=$1
+      WHERE _id=$1
       RETURNING *;
       `,
       [id, ...Object.values(fields)]

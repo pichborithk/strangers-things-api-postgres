@@ -1,4 +1,5 @@
 const { authentication, random } = require('../helpers/authentication');
+const { getPostsByUser } = require('../models/post');
 const { getUser, createUser, updateUser } = require('../models/user');
 
 async function register(req, res) {
@@ -45,7 +46,7 @@ const login = async (req, res) => {
     }
     const user = await getUser({ username });
 
-    if (!user.id) {
+    if (!user._id) {
       res.status(409).json({ success: false, message: 'User Do Not Exist' });
       return;
     }
@@ -57,9 +58,9 @@ const login = async (req, res) => {
     }
 
     const salt = random();
-    user.sessionToken = authentication(salt, user.id);
+    user.sessionToken = authentication(salt, user._id);
 
-    await updateUser(user.id, { sessionToken: user.sessionToken });
+    await updateUser(user._id, { sessionToken: user.sessionToken });
 
     res.status(200).json({
       success: true,
@@ -80,10 +81,12 @@ const readUser = async (req, res) => {
       res.status(403).json({ success: false, message: 'Please login...' });
       return;
     }
-    console.log('1');
+
     const user = await getUser({ sessionToken });
     delete user.password;
     delete user.salt;
+    user.posts = await getPostsByUser(user._id);
+
     res.status(200).json({ success: true, data: user });
     return;
   } catch (error) {
