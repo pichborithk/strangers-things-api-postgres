@@ -32,56 +32,56 @@ async function createTables() {
 
     await db.query(`
       CREATE TABLE users (
-        _id            UUID         PRIMARY KEY  DEFAULT uuid_generate_v4(),
-        username       VARCHAR(255) NOT NULL     UNIQUE,
-        password       VARCHAR(255) NOT NULL,
-        salt           VARCHAR(255) NOT NULL,
-        "sessionToken" VARCHAR(255),
-        "createAt"     TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"     TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id             UUID            PRIMARY KEY   DEFAULT uuid_generate_v4(),
+        username        VARCHAR(255)    NOT NULL      UNIQUE,
+        password        VARCHAR(255)    NOT NULL,
+        salt            VARCHAR(255)    NOT NULL,
+        "sessionToken"  VARCHAR(255),
+        "createdAt"     TIMESTAMP(3)    NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"     TIMESTAMP(3)    NOT NULL      DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE posts (
-        _id           UUID                          PRIMARY KEY  DEFAULT uuid_generate_v4(),
-        title         VARCHAR(255)                  NOT NULL,
-        description   VARCHAR(255)                  NOT NULL,
-        price         VARCHAR(255)                  NOT NULL,
-        location      VARCHAR(255)                  NOT NULL,
-        "willDeliver" Boolean                       NOT NULL,
-        "authorId"    UUID REFERENCES users(_id)    NOT NULL,
-        "createAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"    TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        active        Boolean                       NOT NULL     DEFAULT true
+        _id             UUID                          PRIMARY KEY   DEFAULT uuid_generate_v4(),
+        title           VARCHAR(255)                  NOT NULL,
+        description     VARCHAR(255)                  NOT NULL,
+        price           VARCHAR(255)                  NOT NULL,
+        location        VARCHAR(255)                  NOT NULL,
+        "willDeliver"   Boolean                       NOT NULL,
+        "authorId"      UUID REFERENCES users(_id)    NOT NULL,
+        "createdAt"     TIMESTAMP(3)                  NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"     TIMESTAMP(3)                  NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        active          Boolean                       NOT NULL      DEFAULT true
       );
 
       CREATE TABLE comments (
-        _id         UUID                          PRIMARY KEY  DEFAULT uuid_generate_v4(),
-        content     VARCHAR(255)                  NOT NULL,
-        "postId"    UUID REFERENCES posts(_id)    NOT NULL,
-        "authorId"  UUID REFERENCES users(_id)    NOT NULL,
-        "createAt"  TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"  TIMESTAMP(3)                  NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id           UUID                          PRIMARY KEY   DEFAULT uuid_generate_v4(),
+        content       VARCHAR(255)                  NOT NULL,
+        "postId"      UUID REFERENCES posts(_id)    NOT NULL,
+        "authorId"    UUID REFERENCES users(_id)    NOT NULL,
+        "createdAt"   TIMESTAMP(3)                  NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"   TIMESTAMP(3)                  NOT NULL      DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE conversations (
-        _id        UUID         PRIMARY KEY  DEFAULT uuid_generate_v4(),
-        "createAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt" TIMESTAMP(3) NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id           UUID            PRIMARY KEY   DEFAULT uuid_generate_v4(),
+        "createdAt"   TIMESTAMP(3)    NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"   TIMESTAMP(3)    NOT NULL      DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE users_conversations (
-        "userId"         UUID REFERENCES users(_id)         NOT NULL,           
-        "conversationId" UUID REFERENCES conversations(_id) NOT NULL,
+        "userId"            UUID REFERENCES users(_id)            NOT NULL,           
+        "conversationId"    UUID REFERENCES conversations(_id)    NOT NULL,
         UNIQUE ("userId", "conversationId")
       );
 
       CREATE TABLE messages (
-        _id              UUID                                  PRIMARY KEY  DEFAULT uuid_generate_v4(),
-        content          VARCHAR(255)                          NOT NULL,
-        "authorId"       UUID REFERENCES users(_id)            NOT NULL,
-        "conversationId" UUID REFERENCES conversations(_id)    NOT NULL,
-        "createAt"       TIMESTAMP(3)                          NOT NULL     DEFAULT CURRENT_TIMESTAMP,
-        "updateAt"       TIMESTAMP(3)                          NOT NULL     DEFAULT CURRENT_TIMESTAMP
+        _id               UUID                                  PRIMARY KEY   DEFAULT uuid_generate_v4(),
+        content           VARCHAR(255)                          NOT NULL,
+        "authorId"        UUID REFERENCES users(_id)            NOT NULL,
+        "conversationId"  UUID REFERENCES conversations(_id)    NOT NULL,
+        "createdAt"       TIMESTAMP(3)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"       TIMESTAMP(3)                          NOT NULL      DEFAULT CURRENT_TIMESTAMP
       );
     `);
 

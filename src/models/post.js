@@ -26,7 +26,8 @@ async function getAllPosts() {
       `
       SELECT posts.*, users.username as "authorUsername"
       FROM posts
-      JOIN users ON posts."authorId"=users._id;
+      JOIN users ON posts."authorId"=users._id
+      WHERE posts.active=true;
       `
     );
 
@@ -55,7 +56,7 @@ async function getPostById(postId) {
 async function getPostsByUser(userId) {
   const { rows } = await db.query(
     `
-    SELECT _id, title, description, price, location, "willDeliver"
+    SELECT _id, title, description, price, location, "willDeliver", "createdAt", "updatedAt", active
     FROM posts
     WHERE "authorId"=$1;
     `,
