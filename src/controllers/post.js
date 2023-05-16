@@ -78,7 +78,7 @@ const readAll = async (req, res) => {
   }
 };
 
-const patchPost = async (req, res) => {
+const editPost = async (req, res) => {
   try {
     const sessionToken = req.headers.authorization;
     if (!sessionToken) {
@@ -129,4 +129,42 @@ const patchPost = async (req, res) => {
   }
 };
 
-module.exports = { addPost, readAll, patchPost };
+const deletePost = async (req, res) => {
+  try {
+    const sessionToken = req.headers.authorization;
+    if (!sessionToken) {
+      res.status(403).json({ success: false, message: 'Please login to edit' });
+      return;
+    }
+
+    const { postId } = req.params;
+
+    if (!postId) {
+      res.status(403).json({ success: false, message: 'Post does not exist' });
+      return;
+    }
+
+    const post = await getPostById(postId);
+
+    if (!post || !post._id || !post.active) {
+      res.status(403).json({ success: false, message: 'Post does not exist' });
+      return;
+    }
+
+    const user = await getUser({ sessionToken });
+
+    if (!user._id || user._id !== post.authorId) {
+      res.status(403).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    const updatedPost = await updatePost(postId, { active: false });
+
+    res.status(200).json({ success: true, data: updatedPost });
+    return;
+  } catch {
+    res.status(500).json({ success: false, error });
+    return;
+  }
+};
+
+module.exports = { addPost, readAll, editPost, deletePost };
