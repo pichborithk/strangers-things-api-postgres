@@ -19,6 +19,23 @@ async function createUser({ username, password, salt }) {
   }
 }
 
+async function getAllUsers() {
+  try {
+    const { rows } = await db.query(
+      `
+      SELECT _id, username
+      FROM users
+      `
+    );
+
+    const posts = await Promise.all(rows.map(post => addCommentsToPost(post)));
+
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getUser(field) {
   const [key] = Object.keys(field);
   try {
@@ -69,4 +86,4 @@ async function updateUser(id, fields) {
   }
 }
 
-module.exports = { createUser, getUser, updateUser };
+module.exports = { createUser, getAllUsers, getUser, updateUser };
