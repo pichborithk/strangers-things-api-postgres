@@ -1,4 +1,5 @@
 const { authentication, random } = require('../helpers/authentication');
+const { getConversationsByUser } = require('../models/conversation');
 const { getPostsByUser } = require('../models/post');
 const { getUser, createUser, updateUser } = require('../models/user');
 
@@ -86,7 +87,23 @@ const readUser = async (req, res) => {
     delete user.password;
     delete user.salt;
     user.posts = await getPostsByUser(user._id);
-    user.conversations = [];
+
+    const conversations = await getConversationsByUser(user._id);
+    // console.log(conversations);
+    user.conversations = conversations.map(conversation => {
+      let withUser = {};
+      let _id = conversation[0].conversationId;
+      for (let message of conversation) {
+        if (message.username !== user.username) {
+          withUser = { username: message.username, _id: message.authorId };
+        }
+        message.fromUser = {
+          username: message.username,
+          _id: message.authorId,
+        };
+      }
+      return { messages: conversation, withUser, _id };
+    });
 
     res.status(200).json({ success: true, data: user });
     return;
