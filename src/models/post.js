@@ -55,7 +55,7 @@ async function getPostById(postId) {
 async function getPostsByUser(userId) {
   const { rows } = await db.query(
     `
-    SELECT title, description, price, location, "willDeliver"
+    SELECT _id, title, description, price, location, "willDeliver"
     FROM posts
     WHERE "authorId"=$1;
     `,
