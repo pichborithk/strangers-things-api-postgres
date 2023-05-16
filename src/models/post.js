@@ -72,4 +72,37 @@ async function getPostsByUser(userId) {
   return posts;
 }
 
-module.exports = { createPost, getAllPosts, getPostById, getPostsByUser };
+async function updatePost(postId, fields) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 2}`)
+    .join(', ');
+
+  if (setString.length <= 0) {
+    return;
+  }
+
+  try {
+    const { rows } = await db.query(
+      `
+        UPDATE posts
+        SET ${setString}
+        WHERE _id=$1
+        RETURNING *;
+      `,
+      [postId, ...Object.values(fields)]
+    );
+
+    const [post] = rows;
+    return post;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPostById,
+  getPostsByUser,
+  updatePost,
+};
