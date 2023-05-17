@@ -19,6 +19,24 @@ async function createComment(fields) {
   }
 }
 
+async function getCommentById(commentId) {
+  try {
+    const { rows } = await db.query(
+      `
+      SELECT *
+      FROM comments
+      WHERE _id=$1
+      `,
+      [commentId]
+    );
+
+    const [comment] = rows;
+    return comment;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function addCommentsToPost(post) {
   try {
     const { rows } = await db.query(
@@ -49,4 +67,27 @@ async function addCommentsToPost(post) {
   }
 }
 
-module.exports = { createComment, addCommentsToPost };
+async function deleteComment(commentId) {
+  try {
+    const { rows } = await db.query(
+      `
+      DELETE FROM comments
+      WHERE _id=$1
+      RETURNING *;
+      `,
+      [commentId]
+    );
+
+    const [comment] = rows;
+    return comment;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = {
+  createComment,
+  getCommentById,
+  addCommentsToPost,
+  deleteComment,
+};
