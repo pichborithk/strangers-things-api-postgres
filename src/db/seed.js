@@ -1,9 +1,8 @@
 const { db } = require('../config/default');
-const { userList, postList } = require('../db/dummy.data');
-const { authentication } = require('../helpers/authentication');
-const { createComment } = require('./comment');
-const { createPost } = require('./post');
-const { createUser } = require('./user');
+const { userList, postList } = require('./dummy.data');
+const { createComment } = require('../models/comment');
+const { createPost } = require('../models/post');
+const { createUser } = require('../models/user');
 
 async function dropTables() {
   try {
